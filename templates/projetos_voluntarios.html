@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Projetos e Voluntários</title>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Projetos e Voluntários Cadastrados</h1>
+
+        <h2>Projetos</h2>
+        <div class="cards">
+            {% for projeto in projetos %}
+                <div class="card">
+                    <h3>{{ projeto.titulo }}</h3>
+                    <p>Status: {{ projeto.status }}</p>
+                    <p>Voluntários: {{ projeto.voluntarios|length }}</p>
+
+                    <h4>Voluntários Associados</h4>
+                    <ul>
+                        {% for voluntario in projeto.voluntarios %}
+                            <li>
+                                {{ voluntario.nome }} - {{ voluntario.email }}
+                                <form action="/delete_voluntario/{{ voluntario.id }}" method="POST" style="display:none;">
+                                    
+                                </form>
+                                <button  type="submit" onclick="return confirm('Tem certeza que deseja excluir este voluntário?');">Excluir</button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <form action="{{ url_for('delete_projeto', id=projeto.id) }}" method="POST" style="display:none;">
+                        
+                    </form>
+<button type="submit" onclick="return confirm('Tem certeza que deseja excluir este projeto?');">Excluir Projeto</button>
+                    <h4>Cadastrar Novo Voluntário para este Projeto</h4>
+                    <form action="{{ url_for('add_voluntario_projeto', projeto_id=projeto.id) }}" method="POST">
+                        <select name="voluntarios" multiple required>
+                            {% for voluntario in voluntarios %}
+                                <option value="{{ voluntario.id }}">{{ voluntario.nome }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Cadastrar Voluntário</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="/dashboard"><button>Voltar ao Dashboard</button></a>
+    </div>
+</body>
+</html>

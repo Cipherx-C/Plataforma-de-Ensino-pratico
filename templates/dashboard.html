@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard Skill Labs</title>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Dashboard Skill Labs</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total Voluntários</h3>
+                <p>{{ voluntarios|length }}</p>
+            </div>
+            <div class="card">
+                <h3>Total Projetos</h3>
+                <p>{{ projetos|length }}</p>
+            </div>
+        </div>
+
+        <h2>Projetos por Status</h2>
+        <div class="chart">
+        <canvas id="projectsChart" width="50" height="50"></canvas>
+</div>
+        <h2>Voluntários</h2>
+        <ul>
+            {% for voluntario in voluntarios %}
+                <li>{{ voluntario.nome }} - {{ voluntario.email }}</li>
+            {% endfor %}
+        </ul>
+
+        <a href="/"><button>Início</button></a>
+        <a href="/projetos_voluntarios"><button>Ver Projetos e Voluntários</button></a>
+
+        <script>
+            const projetosStatus = {
+                labels: ['Pausado', 'Em Execução', 'Pronto'],
+                datasets: [{
+                    label: 'Quantidade de Projetos',
+                    data: {{ projetos_status|tojson }},
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                    hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                }]
+            };
+            const ctx = document.getElementById('projectsChart').getContext('2d');
+            const projectsChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: projetosStatus,
+            });
+           
+        </script>
+    </div>
+</body>
+</html>
